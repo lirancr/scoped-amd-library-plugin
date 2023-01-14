@@ -1,3 +1,6 @@
+[![Run tests](https://github.com/lirancr/scoped-amd-library-plugin/actions/workflows/test.yml/badge.svg)](https://github.com/lirancr/scoped-amd-library-plugin/actions/workflows/test.yml)
+[![NPM Version](https://badge.fury.io/js/scoped-amd-library-plugin.svg?style=flat)](https://www.npmjs.com/package/scoped-amd-library-plugin)
+
 # Scoped AMD Library Webpack Plugin
 
 This is a fork of Webpack's [AmdLibraryPlugin](https://github.com/webpack/webpack/blob/main/lib/library/AmdLibraryPlugin.js)
@@ -13,10 +16,11 @@ scope dependency instead.
     ```javascript
     new ScopedAmdLibraryPlugin({ scopeDependencyName: 'myScope' })
     ```
-4. Use the [ProvidePlugin](https://webpack.js.org/plugins/provide-plugin/) to hook up any global namespaces your code access to your scope dependency.
+4. Use the [ProvidePlugin](https://webpack.js.org/plugins/provide-plugin/) point any global namespaces your code access (and you wish to scope) to your scope dependency.
 5. If your scope is not provided from a npm library but rather directly by you at runtime, declare your scope dependency as external by adding it to the `externals` array.
+   Otherwise webpack will look it up in your `node_modules` directory and fail
 
-Your configuration file should end up looking something like this:
+Following steps 1-5, your configuration file should end up looking something like this:
 
 **webpack.config.js**
 
@@ -39,6 +43,7 @@ module.exports = {
 			// step 4
 			window: scopeDependencyName,
 			document: [scopeDependencyName, 'document'],
+			fetch: [scopeDependencyName, 'fetch'],
 		}),
 	],
 	externals: [
